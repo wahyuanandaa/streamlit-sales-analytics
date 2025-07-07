@@ -1,6 +1,6 @@
 # Sales Performance Dashboard
 
-Dashboard interaktif untuk analisis performa penjualan menggunakan Streamlit dan PostgreSQL. Project ini dibuat berdasarkan tutorial dari [Towards Data Science: Building a Data Dashboard](https://towardsdatascience.com/building-a-data-dashboard-9441db646697/).
+Dashboard interaktif untuk analisis performa penjualan menggunakan Streamlit dan file CSV lokal (tanpa database server). Project ini dibuat berdasarkan tutorial dari [Towards Data Science: Building a Data Dashboard](https://towardsdatascience.com/building-a-data-dashboard-9441db646697/).
 
 ## 📊 Fitur Dashboard
 
@@ -29,7 +29,6 @@ Dashboard interaktif untuk analisis performa penjualan menggunakan Streamlit dan
 ## 🛠️ Teknologi yang Digunakan
 
 - **Frontend**: Streamlit
-- **Database**: PostgreSQL
 - **Data Processing**: Pandas
 - **Visualization**: Matplotlib
 - **Data Generation**: Polars, NumPy
@@ -39,8 +38,6 @@ Dashboard interaktif untuk analisis performa penjualan menggunakan Streamlit dan
 Sebelum menjalankan project, pastikan sudah menginstall:
 
 1. **Python 3.8+**
-2. **PostgreSQL** (untuk database)
-3. **pgAdmin** (opsional, untuk manajemen database)
 
 ## 🚀 Instalasi
 
@@ -57,64 +54,13 @@ cd sales-dashboard
 pip install streamlit pandas matplotlib psycopg2 polars numpy
 ```
 
-### 3. Setup Database PostgreSQL
-
-#### A. Buat Database
-
-```sql
-CREATE DATABASE salesdb;
-```
-
-#### B. Buat Tabel
-
-```sql
-\c salesdb
-
-CREATE TABLE IF NOT EXISTS public.sales_data
-(
-    order_id integer NOT NULL,
-    order_date date,
-    customer_id integer,
-    customer_name character varying(255),
-    product_id integer,
-    product_names character varying(255),
-    categories character varying(100),
-    quantity integer,
-    price numeric(10,2),
-    total numeric(10,2)
-);
-```
-
-#### C. Generate Data Dummy
+### 3. Generate Data Dummy
 
 ```bash
 python generate_data.py
 ```
 
-#### D. Import Data ke Database
-
-```sql
-COPY sales_data FROM '/path/to/sales_data.csv' DELIMITER ',' CSV HEADER;
-```
-
-_Ganti `/path/to/sales_data.csv` dengan path file yang benar_
-
-### 4. Konfigurasi Koneksi Database
-
-Edit file `app.py` dan sesuaikan kredensial database:
-
-```python
-@st.cache_resource
-def get_conn_pool():
-    return psycopg2.pool.SimpleConnectionPool(
-        1, 10,
-        user="postgres",         # Ganti dengan user PostgreSQL kamu
-        password="password",     # Ganti dengan password PostgreSQL kamu
-        host="localhost",
-        port="5432",
-        database="salesdb"       # Ganti dengan nama database kamu
-    )
-```
+File `sales_data.csv` akan otomatis dihasilkan dan digunakan sebagai sumber data dashboard.
 
 ## 🏃‍♂️ Cara Menjalankan
 
@@ -164,18 +110,6 @@ git push -u origin main
    - **Branch**: `main`
    - **Main file path**: `app.py`
 5. **Klik "Deploy"**
-
-#### **Langkah 3: Konfigurasi Database (Opsional)**
-
-Untuk menggunakan database PostgreSQL di cloud:
-
-- **Gunakan [Supabase](https://supabase.com)** (gratis tier)
-- **Atau [Railway](https://railway.app)** (berbayar)
-- **Update kredensial database** di `app.py`
-
-#### **Langkah 4: Akses Dashboard**
-
-Dashboard akan tersedia di: `https://your-app-name.streamlit.app`
 
 ---
 
@@ -236,27 +170,12 @@ DB_NAME=salesdb
 
 #### **Untuk Local Development:**
 
-- ✅ **PostgreSQL lokal** sudah cukup
-- ✅ **File CSV** bisa digunakan sebagai alternatif
+- ✅ **File CSV** digunakan sebagai sumber data utama
 - ✅ **Semua fitur** berfungsi normal
 
 #### **Untuk Cloud Deployment:**
 
-- ⚠️ **Database cloud** diperlukan (Supabase, Railway, dll)
-- ⚠️ **Environment variables** untuk kredensial database
-- ⚠️ **CORS settings** jika diperlukan
-- ✅ **Streamlit Cloud** mendukung PostgreSQL
-
-#### **Alternatif Tanpa Database:**
-
-Jika tidak ingin setup database di cloud, bisa modifikasi untuk menggunakan CSV:
-
-```python
-# Ganti fungsi database dengan pandas read_csv
-@st.cache_data
-def load_data():
-    return pd.read_csv('sales_data.csv', parse_dates=['order_date'])
-```
+- ⚠️ Pastikan file `sales_data.csv` tersedia di repository
 
 ### Customization
 
@@ -315,7 +234,6 @@ Project ini dibuat untuk tujuan pembelajaran berdasarkan tutorial dari Towards D
 
 - [Towards Data Science](https://towardsdatascience.com/) untuk tutorial asli
 - [Streamlit](https://streamlit.io/) untuk framework dashboard
-- [PostgreSQL](https://www.postgresql.org/) untuk database
 
 ## 📞 Support
 
